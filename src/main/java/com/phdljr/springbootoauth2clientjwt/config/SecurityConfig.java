@@ -1,5 +1,6 @@
 package com.phdljr.springbootoauth2clientjwt.config;
 
+import com.phdljr.springbootoauth2clientjwt.jwt.JwtFilter;
 import com.phdljr.springbootoauth2clientjwt.jwt.JwtUtil;
 import com.phdljr.springbootoauth2clientjwt.oauth2.CustomSuccessHandler;
 import com.phdljr.springbootoauth2clientjwt.service.CustomOAuth2UserService;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @RequiredArgsConstructor
 @Configuration
@@ -40,6 +42,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/").permitAll()
                 .anyRequest().authenticated());
+
+        http
+            .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
